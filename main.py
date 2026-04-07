@@ -1,36 +1,31 @@
+import src.interface as ui
 import csv
 import os 
-os.system('cls')
+os.system("cls")
 
-titulo = "PORTAL DO ALUNO"
-print(titulo.center(60))
-print('-=-' * 20)
+titulo = "\033[1;31mPORTAL DO ALUNO\033[m"
+print(titulo.center(80))
+print("-=-" * 25)
 
-
-print('\n[1] - Professor \n[2] - Aluno')
-
-opcao_entrada = int(input("\n------> 1 ou 2: "))
+opcao_entrada = int(input(ui.MENU_INICIAL))
 
 if opcao_entrada == 1:
-    print('\n[1] - Já tenho cadastro\n[2] - Não tenho cadastro')
-    cadastro_professor = int(input('\nDigite a sua opção de entrada: '))
+    cadastro_professor = int(input(ui.MENU_OPCAO_ENTRADA))
 
     if cadastro_professor == 2:
-        print('\nFaça o seu cadastro no Portal professor: ')
-        print('-' * 45)
-        print('O nome de usuário deverá conter 8 caracteres, pelo menos um maiusculo e um minusculo e um caracter especial.\n')
-        usuario_professor = str(input('Username: '))
-        print('\nA sua senha deverá conter seis caracteres e um caracter especial')
-        password_professor = str(input('\nDigite a sua senha: '))
+        print(ui.CADASTRO_PROFESSOR)
+        usuario_professor = str(input("Usuário: "))
+        print("\nA sua senha deverá conter seis caracteres e um caracter especial")
+        password_professor = str(input("\nDigite a sua senha: "))
         with open('dados-professor.csv', 'a', newline='') as arquivo:
             escritor = csv.writer(arquivo)
             escritor.writerow([usuario_professor,password_professor])
-        print('\n\033[1;32mCadastro efetuado com sucesso!\033[m')
+        print("\n\033[1;32mCadastro efetuado com sucesso!\033[m")
         
     elif cadastro_professor == 1:
         while True:
-            login = input('\nDigite o usuário: ')
-            password = input('\nDigite a sua senha: ')
+            login = input("\nDigite o usuário: ")
+            password = input("\nDigite a sua senha: ")
             encontrado_professor = False
             try:
                 with open("dados-professor.csv", "r", newline="", encoding="utf-8") as arquivo:
@@ -42,9 +37,7 @@ if opcao_entrada == 1:
                             break
                     
                     if encontrado_professor:
-                        print('\n\033[1;32mLogin realizado com sucesso!\033[m')
-                        print("\n[1] - Boletim \n[2] - Presença")
-                        menu_professor = int(input("\n------> 1 ou 2: "))
+                        menu_professor = int(input(ui.MENU_PROFESSOR))
                         
                         if menu_professor == 1:
                             while True:
@@ -56,17 +49,22 @@ if opcao_entrada == 1:
                                     escritor03 = csv.writer(arquivo)
                                     escritor03.writerow([materia,nota,aluno])
                                 print("\n\033[1;32mNota adicionada com sucesso!\033[m")
+
                                 mais_de_uma_nota = int(input("Digite [1] para adicionar mais notas e [2] finalizar: "))
                                 if mais_de_uma_nota == 2:
-                                    print("Fim")
                                     break
                                 elif mais_de_uma_nota == 1:
-                                    print('\nDigite novamente: ')
                                     continue
                             break
 
                         elif menu_professor == 2:
-                            print("Adicione faltas e presenças, digitando 1 para presença e 2 para falta, em seguida o nome do aluno: ")
+                            materia_falta = str(input("Digite a respectiva matéria na qual o aluno faltou: "))
+                            faltas = int(input('Digite a quantidade de faltas: '))
+                            aluno_falta = str(input("Digite o nome e sobrenome do respectivo aluno: "))
+                            with open("faltas.csv", "a", newline="", encoding="utf-8") as arquivo:
+                                    escritor04 = csv.writer(arquivo)
+                                    escritor04.writerow([materia_falta,faltas,aluno_falta])
+                            print("\n\033[1;32mPresença/falta adicionada com sucesso!\033[m")  
                             break
 
                     else:
@@ -77,13 +75,10 @@ if opcao_entrada == 1:
                     print("\nNenhum cadastro encontrado ainda")
 
 if opcao_entrada == 2:
-    print('\n[1]- Já tenho cadastro\n[2]- Não tenho cadastro')
-    cadastro_aluno = int(input('\nDigite a sua opção de entrada: '))
+    cadastro_aluno = int(input(ui.MENU_OPCAO_ENTRADA_ALUNO))
     
     if cadastro_aluno == 2:
-        print('\nFaça o seu cadastro do Aluno: ')
-        print('-' * 45)
-        print('O nome de usuário deverá conter 8 caracteres, pelo menos um maiusculo e um minusculo e um caracter especial.\n')
+        print(ui.CADASTRO_ALUNO)
         username = str(input('Digite o seu usuário: '))
         print('\nA sua senha deverá conter seis caracteres e um caracter especial')
         password = str(input('Digite a sua senha: '))
@@ -93,56 +88,88 @@ if opcao_entrada == 2:
         print('\n\033[1;32mCadastro efetuado com sucesso!\033[m')
 
     elif cadastro_aluno == 1:
-         while True:
-            login = str(input('\nDigite o seu Usuário: '))
-            senha = str(input('\nDigite a sua senha: '))
-            encontrado_aluno = False
-            try:
-                with open("dados-aluno.csv", "r", newline="", encoding="utf-8") as arquivo:
-                    leitor = csv.reader(arquivo)
-                    for linha in leitor:
-                        if login == linha [0] and senha == linha [1]:
-                            encontrado_aluno = True
-                            break
+            while True:  # WHILE DO LOGIN
+                login = input('\nDigite o seu Usuário: ').strip()
+                senha = input('\nDigite a sua senha: ').strip()
+                encontrado_aluno = False
+                try:
+                    with open("dados-aluno.csv", "r", newline="", encoding="utf-8") as arquivo:
+                        leitor = csv.reader(arquivo)
+
+                        for linha in leitor:  # FOR DO CSV DE LOGIN
+                            if login == linha[0] and senha == linha[1]:
+                                encontrado_aluno = True
+                                break  # sai do FOR do login
 
                     if encontrado_aluno:
-                        print("\n\033[1;32mLogin realizado com sucesso!\033[m")
-                        print("\nBem vindo(a)")
-                        menu_aluno = int(input("\n[1]-Boletim\n\n[2]-Presença\n--------> 1 ou 2 "))
-                        if menu_aluno == 1:
-                            print("-=-" * 30)
-                            while True:
-                                nome = str(input("\nPara acessar as suas notas, digite o seu nome e sobrenome: "))
-                                encontrado_nota = False
-                                try:
-                                    with open("boletim.csv", 'r', newline='', encoding='utf-8') as arquivo:
-                                        leitor = csv.reader(arquivo)
-                                        
-                                        for linha in leitor:
-                                                if len(linha) < 3:
-                                                        continue
-                                                
-                                                materia = linha[0].strip()
-                                                nota = linha[1].strip()
-                                                nome_csv = linha[2].strip()
+                        menu_aluno = int(input(ui.MENU_ALUNO))
 
-                                                if nome == nome_csv:
-                                                    print(f"{materia:<10} Nota: {nota}")
-                                                    encontrado_nota = True          
-                                        if encontrado_nota:
-                                            break
-                                        else:
-                                            print("\n\033[1;31mNome incorreto!\033[m")
+                        if menu_aluno == 1:
+                            while True:  # WHILE DAS NOTAS
+                                nome = input("\nPara acessar as suas notas, digite o seu nome e sobrenome: ").strip()
+                                encontrado_nota = False
+
+                                try:
+                                    with open("boletim.csv", "r", newline="", encoding="utf-8") as arquivo:
+                                        leitor = csv.reader(arquivo)
+
+                                        for linha in leitor:  # FOR DO CSV DE NOTAS
+                                            if len(linha) < 3:
+                                                continue
+
+                                        materia = linha[0].strip()
+                                        nota = linha[1].strip()
+                                        nome_csv = linha[2].strip()
+
+                                        if nome.lower() == nome_csv.lower():
+                                            print(f"{materia:<10}-----------> Nota: {nota}")
+                                            encontrado_nota = True
+
+                                    if encontrado_nota:
+                                        break  # sai do WHILE DAS NOTAS
+                                    else:
+                                        print("\n\033[1;31mNome incorreto!\033[m")
 
                                 except FileNotFoundError:
                                     print("\nArquivo do boletim não encontrado.")
+                                    break
 
                         elif menu_aluno == 2:
                             print("\nPortal presença aluno ".center(60))
+
+                            while True:
+                                nome_falta = input("\nPara acessar as suas faltas, digite o seu nome e sobrenome: ").strip()
+                                encontrado_falta = False
+
+                                try:
+                                    with open("faltas.csv", "r", newline="", encoding="utf-8") as arquivo2:
+                                        leitor2 = csv.reader(arquivo2)
+
+                                        for linha in leitor2:
+                                            if len(linha) < 3:
+                                                continue
+
+                                            materia_falta = linha[0].strip()
+                                            faltas = linha[1].strip()
+                                            aluno_falta = linha[2].strip()
+
+                                            if nome_falta.lower() == aluno_falta.lower():
+                                                print(f"{materia_falta} -----------> faltas: {faltas}")
+                                                encontrado_falta = True
+
+                                    if encontrado_falta:
+                                        break
+                                    
+                                    else:
+                                        print("\n\033[1;31mNome incorreto!\033[m")
+
+                                except FileNotFoundError:
+                                    print("\n\033[1;31mArquivo de faltas não encontrado.\033[m")
                         break
-                        
+
                     else:
-                        print("\n\033[1;31mUsuário ou senha incorretos.\033[m")
-                        
-            except FileNotFoundError:
-                print("\n\033[1;31Nenhum cadastro encontrado ainda\033[m")
+                        print("\n\033[1;31mUsuário ou senha incorretos!\033[m")
+
+                except FileNotFoundError:
+                    print("\n\033[1;31mArquivo de alunos não encontrado.\033[m")
+                    break
